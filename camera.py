@@ -1,9 +1,12 @@
 from constants import *
 
 class Camera:
-    def __init__(self, aspect_ratio):
-        viewport_height = 2
+    def __init__(self, vfov, aspect_ratio):
+        theta = degrees_to_radians(vfov)
+        h = math.tan(theta/2)
+        viewport_height = 2 * h
         viewport_width = aspect_ratio * viewport_height
+
         focal_length = 1
 
         self.origin = Point3(0, 0, 0)
