@@ -6,10 +6,13 @@ from camera import *
 
 import math
 
-def ray_color(r, world):
+def ray_color(r, world, depth):
+    if depth <= 0:
+        return Color(0, 0, 0)
     hit, rec = world.hit(r, 0, INFINITY)
     if hit:
-        return 0.5 * (rec.normal + Color(1, 1, 1))
+        target = rec.p + rec.normal + random_unit_in_sphere()
+        return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth-1)
     unit_direction = unit_vector(r.direction())
     t = 0.5 * (unit_direction.y() + 1)
     return (1 - t) * Color(1, 1, 1) + t * Color(0.5, 0.7, 1)
@@ -19,6 +22,7 @@ ASPECT_RATIO = 16 / 9
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = int(IMAGE_WIDTH / ASPECT_RATIO)
 SAMPLES_PER_PIXEL = 10
+MAX_DEPTH = 50
 
 # World
 world = HittableList()
@@ -41,7 +45,7 @@ for j in range(IMAGE_HEIGHT, 0, -1):
             u = (i + random()) / (IMAGE_WIDTH - 1)
             v = (j + random()) / (IMAGE_HEIGHT - 1)
             r = cam.get_ray(u, v)
-            pixel_color += ray_color(r, world)
+            pixel_color += ray_color(r, world, MAX_DEPTH)
         write_color(f, pixel_color, SAMPLES_PER_PIXEL)
 
 print("Done.")

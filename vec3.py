@@ -1,4 +1,4 @@
-import math
+from constants import *
 
 class Vec3:
     def __init__(self, e0=0, e1=0, e2=0):
@@ -91,6 +91,12 @@ class Vec3:
 
     def __ne__(self, v):
         return not self.__eq__(v)
+    
+    def random():
+        return Vec3(random(), random(), random())
+    
+    def randbetween(min, max):
+        return Vec3(randbetween(min, max), randbetween(min, max), randbetween(min, max))
 
 def dot(u, v):
     return u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
@@ -104,6 +110,12 @@ def cross(u, v):
 
 def unit_vector(v):
     return v / v.length()
+
+def random_unit_in_sphere():
+    while True:
+        p = Vec3.random()
+        if p.length_squared() >= 1: continue
+        return p
 
 # Type aliases for Vec3
 Point3 = Vec3  # 3D point
