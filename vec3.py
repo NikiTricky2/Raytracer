@@ -111,11 +111,21 @@ def cross(u, v):
 def unit_vector(v):
     return v / v.length()
 
-def random_unit_in_sphere():
+def random_in_unit_sphere():
     while True:
         p = Vec3.random()
         if p.length_squared() >= 1: continue
         return p
+    
+def random_unit_vector():
+    return unit_vector(random_in_unit_sphere())
+
+def random_in_hemisphere(normal):
+    in_unit_sphere = random_in_unit_sphere()
+    if dot(in_unit_sphere, normal) > 0:
+        return in_unit_sphere
+    else:
+        return -in_unit_sphere
 
 # Type aliases for Vec3
 Point3 = Vec3  # 3D point

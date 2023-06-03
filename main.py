@@ -9,9 +9,9 @@ import math
 def ray_color(r, world, depth):
     if depth <= 0:
         return Color(0, 0, 0)
-    hit, rec = world.hit(r, 0, INFINITY)
+    hit, rec = world.hit(r, 0.001, INFINITY)
     if hit:
-        target = rec.p + rec.normal + random_unit_in_sphere()
+        target = rec.p + rec.normal + random_unit_vector()
         return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth-1)
     unit_direction = unit_vector(r.direction())
     t = 0.5 * (unit_direction.y() + 1)
@@ -21,8 +21,8 @@ def ray_color(r, world, depth):
 ASPECT_RATIO = 16 / 9
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = int(IMAGE_WIDTH / ASPECT_RATIO)
-SAMPLES_PER_PIXEL = 50
-MAX_DEPTH = 10
+SAMPLES_PER_PIXEL = 100
+MAX_DEPTH = 50
 
 # World
 world = HittableList()
