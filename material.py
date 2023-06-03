@@ -39,7 +39,20 @@ class Dielectric(Material):
         refraction_ratio = 1/self.ir if rec.front_face else self.ir
 
         unit_direction = unit_vector(r_in.direction())
-        refracted = refract(unit_direction, rec.normal, refraction_ratio)
+        cos_theta = min(dot(-unit_direction, rec.normal), 1)
+        sin_theta = math.sqrt(1 - cos_theta**2)
 
-        scattered = Ray(rec.p, refracted)
+        cannot_refract = (refraction_ratio * sin_theta) > 1
+        if cannot_refract or self._reflectance(cos_theta, refraction_ratio) > random():
+            direction = reflect(unit_direction, rec.normal)
+        else:
+            direction = refract(unit_direction, rec.normal, refraction_ratio)
+
+        scattered = Ray(rec.p, direction)
         return scattered, attenuation, True
+    
+    def _reflectance(self, cosine, ref_idx):
+        # Use Shlick's approximation for reference
+        r0 = (1-ref_idx) / (1+ref_idx)
+        r0 = r0**2
+        return r0 + (1-r0)*pow((1 - cosine), 5)
