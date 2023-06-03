@@ -1,26 +1,14 @@
-from vec3 import *
-from ray import *
+from constants import *
 from color import *
+from hittable_list import *
+from sphere import *
 
 import math
 
-def hit_sphere(center, radius, r):
-    oc = r.origin() - center
-    a = r.direction().length_squared()
-    half_b = dot(oc, r.direction())
-    c = oc.length_squared() - radius**2
-    discriminant = half_b**2 - a*c
-
-    if discriminant < 0:
-        return -1
-    else:
-        return (-half_b - math.sqrt(discriminant)) / a
-
-def ray_color(r):
-    t = hit_sphere(Point3(0, 0, -1), 0.5, r)
-    if t > 0:
-        N = unit_vector(r.at(t) - Vec3(0, 0, -1))
-        return 0.5*Color(N.x()+1, N.y()+1, N.z()+1)
+def ray_color(r, world):
+    hit, rec = world.hit(r, 0, INFINITY)
+    if hit:
+        return 0.5 * (rec.normal + Color(1, 1, 1))
     unit_direction = unit_vector(r.direction())
     t = 0.5 * (unit_direction.y() + 1)
     return (1 - t) * Color(1, 1, 1) + t * Color(0.5, 0.7, 1)
@@ -29,6 +17,11 @@ def ray_color(r):
 ASPECT_RATIO = 16 / 9
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = int(IMAGE_WIDTH / ASPECT_RATIO)
+
+# World
+world = HittableList()
+world.add(Sphere(Point3(0, -100.5, -1), 100))
+world.add(Sphere(Point3(0, 0, -1), 0.5))
 
 # Camera
 
@@ -52,7 +45,7 @@ for j in range(IMAGE_HEIGHT, 0, -1):
         u = i / (IMAGE_WIDTH - 1)
         v = j / (IMAGE_HEIGHT - 1)
         r = Ray(origin, lower_left_corner + u*horizontal + v*vertical - origin)
-        pixel_color = ray_color(r)
+        pixel_color = ray_color(r, world)
         write_color(f, pixel_color)
 
 print("Done.")
