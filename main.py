@@ -21,8 +21,8 @@ def ray_color(r, world, depth):
 ASPECT_RATIO = 16 / 9
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = int(IMAGE_WIDTH / ASPECT_RATIO)
-SAMPLES_PER_PIXEL = 10
-MAX_DEPTH = 50
+SAMPLES_PER_PIXEL = 50
+MAX_DEPTH = 10
 
 # World
 world = HittableList()
