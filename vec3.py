@@ -84,19 +84,6 @@ class Vec3:
             raise ZeroDivisionError("Division by zero")
         return Vec3(t / self.e[0], t / self.e[1], t / self.e[2])
 
-    def dot(self, v):
-        return self.e[0] * v.e[0] + self.e[1] * v.e[1] + self.e[2] * v.e[2]
-
-    def cross(self, v):
-        return Vec3(
-            self.e[1] * v.e[2] - self.e[2] * v.e[1],
-            self.e[2] * v.e[0] - self.e[0] * v.e[2],
-            self.e[0] * v.e[1] - self.e[1] * v.e[0],
-        )
-
-    def unit_vector(self):
-        return self / self.length()
-
     def __eq__(self, v):
         if not isinstance(v, Vec3):
             return False
@@ -104,6 +91,19 @@ class Vec3:
 
     def __ne__(self, v):
         return not self.__eq__(v)
+
+def dot(u, v):
+    return u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
+
+def cross(u, v):
+    return Vec3(
+        u.e[1] * v.e[2] - u.e[2] * v.e[1],
+        u.e[2] * v.e[0] - u.e[0] * v.e[2],
+        u.e[0] * v.e[1] - u.e[1] * v.e[0],
+    )
+
+def unit_vector(v):
+    return v / v.length()
 
 # Type aliases for Vec3
 Point3 = Vec3  # 3D point
