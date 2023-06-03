@@ -3,16 +3,21 @@ from color import *
 from hittable_list import *
 from sphere import *
 from camera import *
+from material import *
 
 import math
 
 def ray_color(r, world, depth):
     if depth <= 0:
         return Color(0, 0, 0)
+    
     hit, rec = world.hit(r, 0.001, INFINITY)
     if hit:
-        target = rec.p + rec.normal + random_unit_vector()
-        return 0.5 * ray_color(Ray(rec.p, target - rec.p), world, depth-1)
+        scattered, attenuation, res = rec.mat_ptr.scatter(r, rec)
+        if res:
+            return attenuation * ray_color(scattered, world, depth-1)
+        return Color(0, 0, 0)
+    
     unit_direction = unit_vector(r.direction())
     t = 0.5 * (unit_direction.y() + 1)
     return (1 - t) * Color(1, 1, 1) + t * Color(0.5, 0.7, 1)
@@ -21,13 +26,21 @@ def ray_color(r, world, depth):
 ASPECT_RATIO = 16 / 9
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = int(IMAGE_WIDTH / ASPECT_RATIO)
-SAMPLES_PER_PIXEL = 100
-MAX_DEPTH = 50
+SAMPLES_PER_PIXEL = 10
+MAX_DEPTH = 20
 
 # World
 world = HittableList()
-world.add(Sphere(Point3(0, -100.5, -1), 100))
-world.add(Sphere(Point3(0, 0, -1), 0.5))
+
+material_ground = Lambertian(Color(0.8, 0.8, 0))
+material_center = Lambertian(Color(0.7, 0.3, 0.3))
+material_left = Metal(Color(0.8, 0.8, 0.8))
+material_right = Metal(Color(0.8, 0.6, 0.2))
+
+world.add(Sphere(Point3(0, -100.5, -1), 100, material_ground))
+world.add(Sphere(Point3(-1, 0, -1), 0.5, material_left))
+world.add(Sphere(Point3(1, 0, -1), 0.5, material_right))
+world.add(Sphere(Point3(0, 0, -1), 0.5, material_center))
 
 # Camera
 cam = Camera(ASPECT_RATIO)

@@ -5,7 +5,7 @@ def write_color(out, pixel_color, samples_per_pixel):
     g = pixel_color.y()
     b = pixel_color.z()
 
-    # Divide the color by the number of samples
+    # Divide the color by the number of samples and gamma-correct for gamma=2
     scale = 1 / samples_per_pixel
     r = math.sqrt(scale * r)
     g = math.sqrt(scale * g)

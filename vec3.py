@@ -97,6 +97,10 @@ class Vec3:
     
     def randbetween(min, max):
         return Vec3(randbetween(min, max), randbetween(min, max), randbetween(min, max))
+    
+    def near_zero(self):
+        s = 1e-8
+        return abs(self.e[0]) < s and abs(self.e[1]) < s and abs(self.e[2]) < s
 
 def dot(u, v):
     return u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]
@@ -126,6 +130,9 @@ def random_in_hemisphere(normal):
         return in_unit_sphere
     else:
         return -in_unit_sphere
+
+def reflect(v, n):
+    return v - 2 * dot(v, n) * n
 
 # Type aliases for Vec3
 Point3 = Vec3  # 3D point
