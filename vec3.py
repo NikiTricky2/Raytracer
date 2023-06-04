@@ -140,6 +140,12 @@ def refract(uv, n, etai_over_etat):
     r_out_parallel = -math.sqrt(abs(1 - r_out_perp.length_squared())) * n
     return r_out_perp + r_out_parallel
 
+def random_in_unit_disk():
+    while True:
+        p = Vec3(randbetween(-1, 1), randbetween(-1, 1), 0)
+        if p.length_squared() >= 1: continue
+        return p
+
 # Type aliases for Vec3
 Point3 = Vec3  # 3D point
 Color = Vec3  # RGB color
