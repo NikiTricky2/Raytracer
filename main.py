@@ -22,35 +22,61 @@ def ray_color(r, world, depth):
     t = 0.5 * (unit_direction.y() + 1)
     return (1 - t) * Color(1, 1, 1) + t * Color(0.5, 0.7, 1)
 
+def random_scene():
+    world = HittableList()
+
+    ground_material = Lambertian(Color(0.5, 0.5, 0.5))
+    world.add(Sphere(Point3(0, -1000, 0), 1000, ground_material))
+
+    for a in range(-11, 11):
+        for b in range(-11, 11):
+            choose_mat = random()
+            center = Point3(a + 0.9*random(), 0.2, b+0.9*random())
+
+            if a == -4 and b == 0:
+                material2 = Lambertian(Color(0.4, 0.2, 0.1))
+                world.add(Sphere(Point3(-4, 1, 0), 1, material2))
+            elif a == 0 and b == 0:
+                material1 = Dielectric(1.5)
+                world.add(Sphere(Point3(0, 1, 0), 1, material1))
+            elif a == 4 and b == 0:
+                material3 = Metal(Color(0.7, 0.6, 0.5), 0)
+                world.add(Sphere(Point3(4, 1, 0), 1, material3))
+
+            if (center - Point3(4, 0.2, 0)).length() > 0.9:
+                if choose_mat < 0.8:
+                    # diffuse
+                    albedo = Color.random() * Color.random()
+                    sphere_material = Lambertian(albedo)
+                    world.add(Sphere(center, 0.2, sphere_material))
+                elif choose_mat < 0.95:
+                    # metal
+                    albedo = Color.randbetween(0.5, 1)
+                    fuzz = randbetween(0, 0.5)
+                    world.add(Sphere(center, 0.2, sphere_material))
+                else:
+                    # glass
+                    sphere_material = Dielectric(1.5)
+                    world.add(Sphere(center, 0.2, sphere_material))
+
+    return world
+
 # Image
-ASPECT_RATIO = 16 / 9
-IMAGE_WIDTH = 400
+ASPECT_RATIO = 3 / 2
+IMAGE_WIDTH = 1200
 IMAGE_HEIGHT = int(IMAGE_WIDTH / ASPECT_RATIO)
-SAMPLES_PER_PIXEL = 10
-MAX_DEPTH = 20
+SAMPLES_PER_PIXEL = 100
+MAX_DEPTH = 50
 
 # World
-
-R = math.cos(PI/4)
-world = HittableList()
-
-material_ground = Lambertian(Color(0.8, 0.8, 0))
-material_center = Lambertian(Color(0.1, 0.2, 0.5))
-material_left = Dielectric(1.5)
-material_right = Metal(Color(0.8, 0.6, 0.2), 0)
-
-world.add(Sphere(Point3(0, -100.5, -1), 100, material_ground))
-world.add(Sphere(Point3(-1, 0, -1), -0.4, material_left))
-world.add(Sphere(Point3(-1, 0, -1), 0.5, material_left))
-world.add(Sphere(Point3(0, 0, -1), 0.5, material_center))
-world.add(Sphere(Point3(1, 0, -1), 0.5, material_right))
+world = random_scene()
 
 # Camera
-lookfrom = Point3(3, 3, 2)
-lookat = Point3(0, 0, -1)
+lookfrom = Point3(13, 2, 3)
+lookat = Point3(0, 0, 0)
 vup = Point3(0, 1, 0)
-dist_to_focus = (lookfrom - lookat).length()
-aperture = 2
+dist_to_focus = 10
+aperture = 0.1
 
 cam = Camera(lookfrom, lookat, vup, 20, ASPECT_RATIO, aperture, dist_to_focus)
 
