@@ -5,8 +5,6 @@ from sphere import *
 from camera import *
 from material import *
 
-import math
-
 def ray_color(r, world, depth):
     if depth <= 0:
         return Color(0, 0, 0)
@@ -33,16 +31,6 @@ def random_scene():
             choose_mat = random()
             center = Point3(a + 0.9*random(), 0.2, b+0.9*random())
 
-            if a == -4 and b == 0:
-                material2 = Lambertian(Color(0.4, 0.2, 0.1))
-                world.add(Sphere(Point3(-4, 1, 0), 1, material2))
-            elif a == 0 and b == 0:
-                material1 = Dielectric(1.5)
-                world.add(Sphere(Point3(0, 1, 0), 1, material1))
-            elif a == 4 and b == 0:
-                material3 = Metal(Color(0.7, 0.6, 0.5), 0)
-                world.add(Sphere(Point3(4, 1, 0), 1, material3))
-
             if (center - Point3(4, 0.2, 0)).length() > 0.9:
                 if choose_mat < 0.8:
                     # diffuse
@@ -53,20 +41,30 @@ def random_scene():
                     # metal
                     albedo = Color.randbetween(0.5, 1)
                     fuzz = randbetween(0, 0.5)
+                    sphere_material = Metal(albedo, fuzz)
                     world.add(Sphere(center, 0.2, sphere_material))
                 else:
                     # glass
                     sphere_material = Dielectric(1.5)
                     world.add(Sphere(center, 0.2, sphere_material))
 
+    material1 = Dielectric(1.5)
+    world.add(Sphere(Point3(0, 1, 0), 1, material1))
+
+    material2 = Lambertian(Color(0.4, 0.2, 0.1))
+    world.add(Sphere(Point3(-4, 1, 0), 1, material2))
+
+    material3 = Metal(Color(0.7, 0.6, 0.5), 0)
+    world.add(Sphere(Point3(4, 1, 0), 1, material3))
+
     return world
 
 # Image
 ASPECT_RATIO = 3 / 2
-IMAGE_WIDTH = 1200
+IMAGE_WIDTH = 800
 IMAGE_HEIGHT = int(IMAGE_WIDTH / ASPECT_RATIO)
 SAMPLES_PER_PIXEL = 100
-MAX_DEPTH = 50
+MAX_DEPTH = 10
 
 # World
 world = random_scene()
