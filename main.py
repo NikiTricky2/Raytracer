@@ -34,14 +34,19 @@ MAX_DEPTH = 20
 R = math.cos(PI/4)
 world = HittableList()
 
-material_left = Lambertian(Color(0,0,1))
-material_right = Lambertian(Color(1,0,0))
+material_ground = Lambertian(Color(0.8, 0.8, 0))
+material_center = Lambertian(Color(0.1, 0.2, 0.5))
+material_left = Dielectric(1.5)
+material_right = Metal(Color(0.8, 0.6, 0.2), 0)
 
-world.add(Sphere(Point3(-R, 0, -1), R, material_left))
-world.add(Sphere(Point3(R, 0, -1), R, material_right))
+world.add(Sphere(Point3(0, -100.5, -1), 100, material_ground))
+world.add(Sphere(Point3(1, 0, -1), 0.5, material_right))
+world.add(Sphere(Point3(-1, 0, -1), -0.4, material_left))
+world.add(Sphere(Point3(-1, 0, -1), 0.5, material_left))
+world.add(Sphere(Point3(0, 0, -1), 0.5, material_center))
 
 # Camera
-cam = Camera(90, ASPECT_RATIO)
+cam = Camera(Point3(-2, 2, 1), Point3(0, 0, -1), Point3(0, 1, 0), 20, ASPECT_RATIO)
 
 OUTFILE = "result.ppm"
 f = open(OUTFILE, "w+")
