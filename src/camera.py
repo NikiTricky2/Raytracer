@@ -1,7 +1,9 @@
 from constants import *
+from ray import *
+from vec3 import *
 
 class Camera:
-    def __init__(self, lookfrom, lookat, vup, vfov, aspect_ratio, aperture, focus_dist):
+    def __init__(self, lookfrom, lookat, vup, vfov, aspect_ratio, aperture, focus_dist, _time0=0, _time1=0):
         theta = degrees_to_radians(vfov)
         h = math.tan(theta/2)
         viewport_height = 2 * h
@@ -17,6 +19,10 @@ class Camera:
         self.lower_left_corner = self.origin - self.horizontal/2 - self.vertical/2 - focus_dist * self.w
 
         self.lens_radius = aperture / 2
+
+        # Shutter open/close times
+        self.time0 = _time0
+        self.time1 = _time1
     
     def get_ray(self, s, t):
         rd = self.lens_radius * random_in_unit_disk()
@@ -24,5 +30,6 @@ class Camera:
 
         return Ray(
             self.origin + offset, 
-            self.lower_left_corner + s*self.horizontal + t*self.vertical - self.origin - offset
+            self.lower_left_corner + s*self.horizontal + t*self.vertical - self.origin - offset,
+            randbetween(self.time0, self.time1)
         )

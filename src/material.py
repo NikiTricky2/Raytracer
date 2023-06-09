@@ -1,4 +1,6 @@
 from constants import *
+from ray import *
+from vec3 import *
 
 class Material:
     def scatter(self, r_in, rec, attenuation):
@@ -14,7 +16,7 @@ class Lambertian(Material):
         if scatter_direction.near_zero():
             scatter_direction = rec.normal
 
-        scattered = Ray(rec.p, scatter_direction)
+        scattered = Ray(rec.p, scatter_direction, r_in.time())
         attenuation = self.albedo
 
         return scattered, attenuation, True
@@ -26,7 +28,7 @@ class Metal(Material):
 
     def scatter(self, r_in, rec):
         reflected = reflect(unit_vector(r_in.direction()), rec.normal)
-        scattered = Ray(rec.p, reflected + self.fuzz*random_in_unit_sphere())
+        scattered = Ray(rec.p, reflected + self.fuzz*random_in_unit_sphere(), r_in.time())
         attenuation = self.albedo
         return scattered, attenuation, dot(scattered.direction(), rec.normal) > 0
 
@@ -48,7 +50,7 @@ class Dielectric(Material):
         else:
             direction = refract(unit_direction, rec.normal, refraction_ratio)
 
-        scattered = Ray(rec.p, direction)
+        scattered = Ray(rec.p, direction, r_in.time())
         return scattered, attenuation, True
     
     def _reflectance(self, cosine, ref_idx):

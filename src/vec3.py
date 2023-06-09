@@ -1,4 +1,6 @@
 from constants import *
+from ray import *
+from vec3 import *
 
 class Vec3:
     def __init__(self, e0=0, e1=0, e2=0):

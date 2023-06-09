@@ -1,4 +1,6 @@
 from constants import *
+from ray import *
+from vec3 import *
 
 def write_color(out, pixel_color, samples_per_pixel):
     r = pixel_color.x()

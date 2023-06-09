@@ -1,7 +1,10 @@
 from constants import *
+from ray import *
+from vec3 import *
 from color import *
 from hittable_list import *
 from sphere import *
+from moving_sphere import *
 from camera import *
 from material import *
 
@@ -36,7 +39,8 @@ def random_scene():
                     # diffuse
                     albedo = Color.random() * Color.random()
                     sphere_material = Lambertian(albedo)
-                    world.add(Sphere(center, 0.2, sphere_material))
+                    center2 = center + Vec3(0, randbetween(0, 0.5), 0)
+                    world.add(MovingSphere(center, center2, 0, 1, 0.2, sphere_material))
                 elif choose_mat < 0.95:
                     # metal
                     albedo = Color.randbetween(0.5, 1)
@@ -63,7 +67,7 @@ def random_scene():
 ASPECT_RATIO = 3 / 2
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = int(IMAGE_WIDTH / ASPECT_RATIO)
-SAMPLES_PER_PIXEL = 100
+SAMPLES_PER_PIXEL = 50
 MAX_DEPTH = 10
 
 # World
@@ -76,7 +80,7 @@ vup = Point3(0, 1, 0)
 dist_to_focus = 10
 aperture = 0.1
 
-cam = Camera(lookfrom, lookat, vup, 20, ASPECT_RATIO, aperture, dist_to_focus)
+cam = Camera(lookfrom, lookat, vup, 20, ASPECT_RATIO, aperture, dist_to_focus, 0, 1)
 
 OUTFILE = "result.ppm"
 f = open(OUTFILE, "w+")
