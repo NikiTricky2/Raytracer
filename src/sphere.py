@@ -1,15 +1,16 @@
 from hittable import *
 from vec3 import *
+from material import *
 
 import math
 
 class Sphere(Hittable):
-    def __init__(self, cen, r, mat_ptr):
+    def __init__(self, cen: Point3, r: float, mat: Material) -> None:
         self.center = cen
         self.radius = r
-        self.mat_ptr = mat_ptr
+        self.mat = mat
     
-    def hit(self, r, t_min, t_max):
+    def hit(self, r: Ray, t_min: float, t_max: float) -> tuple[bool, HitRecord]:
         rec = HitRecord()
 
         oc = r.origin() - self.center
@@ -31,6 +32,6 @@ class Sphere(Hittable):
         rec.p = r.at(rec.t)
         outward_normal = (rec.p - self.center) / self.radius
         rec.set_face_normal(r, outward_normal)
-        rec.mat_ptr = self.mat_ptr
+        rec.mat = self.mat
 
         return True, rec

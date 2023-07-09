@@ -1,8 +1,9 @@
 from constants import *
 from ray import *
 from vec3 import *
+import typing
 
-def write_color(out, pixel_color, samples_per_pixel):
+def write_color(out: typing.IO, pixel_color: Color, samples_per_pixel: float) -> None:
     r = pixel_color.x()
     g = pixel_color.y()
     b = pixel_color.z()

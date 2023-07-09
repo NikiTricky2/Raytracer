@@ -3,7 +3,7 @@ from ray import *
 from vec3 import *
 
 class Camera:
-    def __init__(self, lookfrom, lookat, vup, vfov, aspect_ratio, aperture, focus_dist, _time0=0, _time1=0):
+    def __init__(self, lookfrom: Point3, lookat: Point3, vup: Vec3, vfov: float, aspect_ratio: float, aperture: float, focus_dist: float, _time0=0.0, _time1=0.0) -> None:
         theta = degrees_to_radians(vfov)
         h = math.tan(theta/2)
         viewport_height = 2 * h
@@ -24,7 +24,7 @@ class Camera:
         self.time0 = _time0
         self.time1 = _time1
     
-    def get_ray(self, s, t):
+    def get_ray(self, s: float, t: float) -> Ray:
         rd = self.lens_radius * random_in_unit_disk()
         offset = self.u * rd.x() + self.v * rd.y()
 

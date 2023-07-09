@@ -8,13 +8,13 @@ from moving_sphere import *
 from camera import *
 from material import *
 
-def ray_color(r, world, depth):
+def ray_color(r: Ray, world: HittableList, depth: int) -> Color:
     if depth <= 0:
         return Color(0, 0, 0)
     
     hit, rec = world.hit(r, 0.001, INFINITY)
     if hit:
-        scattered, attenuation, res = rec.mat_ptr.scatter(r, rec)
+        scattered, attenuation, res = rec.mat.scatter(r, rec)
         if res:
             return attenuation * ray_color(scattered, world, depth-1)
         return Color(0, 0, 0)
@@ -23,7 +23,7 @@ def ray_color(r, world, depth):
     t = 0.5 * (unit_direction.y() + 1)
     return (1 - t) * Color(1, 1, 1) + t * Color(0.5, 0.7, 1)
 
-def random_scene():
+def random_scene() -> HittableList:
     world = HittableList()
 
     ground_material = Lambertian(Color(0.5, 0.5, 0.5))

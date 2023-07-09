@@ -2,17 +2,18 @@ from constants import *
 from vec3 import *
 from ray import *
 from hittable import *
+from material import *
 
 class MovingSphere(Hittable):
-    def __init__(self, cen0, cen1, _time0, _time1, r, m):
+    def __init__(self, cen0: Point3, cen1: Point3, _time0: float, _time1: float, r: float, m: Material):
         self.center0 = cen0
         self.center1 = cen1
         self.time0 = _time0
         self.time1 = _time1
         self.radius = r
-        self.mat_ptr = m
+        self.mat = m
     
-    def hit(self, r, t_min, t_max):
+    def hit(self, r: Ray, t_min: float, t_max: float) -> tuple[bool, HitRecord]:
         rec = HitRecord()
 
         oc = r.origin() - self.center(r.time())
@@ -34,9 +35,9 @@ class MovingSphere(Hittable):
         rec.p = r.at(rec.t)
         outward_normal = (rec.p - self.center(r.time())) / self.radius
         rec.set_face_normal(r, outward_normal)
-        rec.mat_ptr = self.mat_ptr
+        rec.mat = self.mat
 
         return True, rec
 
-    def center(self, time):
+    def center(self, time: float) -> float:
         return self.center0 + ((time - self.time0) / (self.time1 - self.time0)) * (self.center1 - self.center0)
